@@ -1,0 +1,56 @@
+---
+title: "Flex Dashboard"
+output: flexdashboard::flex_dashboard
+  
+
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(DT)
+library(plotly)
+library(dplyr)
+library(leaflet)
+library(htmltools)
+library(knitr)
+```
+
+Test {.storyboard}
+=========================================
+
+### Tablo
+    
+```{r readandshow, echo=FALSE}
+eqtr <- read.csv(file = "earthquake.csv", header = T, sep = ",", nrows = 1000)
+eqtr %>% filter(xm>5) %>% datatable(options = list(pageLength = 10))
+```
+   
+
+### Özet 
+
+```{r summary, echo=FALSE}
+eqtr %>% summary()
+```   
+
+### Harita
+    
+```{r harita, echo=FALSE}
+pal <- colorNumeric(
+  palette = "YlOrRd",
+  domain = eqtr$xm
+)
+
+eqtr %>% filter(xm>4.5) %>% leaflet() %>% addTiles() %>% 
+  addCircleMarkers(lng = ~long, 
+                   lat = ~lat, 
+                   fillColor = pal(eqtr$xm),
+                   stroke = F,
+                   popup = ~htmlEscape(as.character(xm))) %>% 
+  addLegend("bottomright", pal = pal, values = ~xm,
+    opacity = 1
+  )
+```
+
