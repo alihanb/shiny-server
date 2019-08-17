@@ -1,6 +1,9 @@
 ---
-title: "Flex Dashboard"
-output: flexdashboard::flex_dashboard
+title: "Earthquake Visualization"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    theme: bootstrap
   
 
 ---
@@ -16,24 +19,11 @@ library(dplyr)
 library(leaflet)
 library(htmltools)
 library(knitr)
-```
-
-Test {.storyboard}
-=========================================
-
-### Tablo
-    
-```{r readandshow, echo=FALSE}
 eqtr <- read.csv(file = "earthquake.csv", header = T, sep = ",", nrows = 1000)
-eqtr %>% filter(xm>5) %>% datatable(options = list(pageLength = 10))
 ```
-   
 
-### Özet 
-
-```{r summary, echo=FALSE}
-eqtr %>% summary()
-```   
+Row {data-height=650}
+-------------------------------------
 
 ### Harita
     
@@ -53,4 +43,21 @@ eqtr %>% filter(xm>4.5) %>% leaflet() %>% addTiles() %>%
     opacity = 1
   )
 ```
+
+Row {.tabset .tabset-fade}
+-------------------------------------
+
+### Tablo
+    
+```{r readandshow, echo=FALSE}
+eqtr <- eqtr %>% subset(select = -c(id,lat,long,md,richter,mw,ms,mb))
+eqtr %>% filter(xm>5) %>% datatable(options = list(pageLength = 10))
+```
+   
+
+### Özet 
+
+```{r summary, echo=FALSE}
+eqtr %>% summary()
+```   
 
